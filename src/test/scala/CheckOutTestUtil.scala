@@ -5,7 +5,7 @@ import matchers._
 
 import org.scalatest.BeforeAndAfter
 
-  //1. EmptyList shouuld return exception
+  //1. EmptyList should return exception
   //2. GetTotal for only displayed items and discard other items
   //3. Enter garbage chars in list and check for output
   //4. Enter only apples/Oranges and check price

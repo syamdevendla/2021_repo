@@ -2,7 +2,7 @@
 import scala.collection.mutable._
 
 
-//* All prices tags will be in Pounds, 60p => 0.6 pound
+//* All prices tags will be in Pounds, 60p  => 0.6 pound
 //* Input any string items
 //* Assuming only small case items are allowed. So, converting all strings to lowercase.
 //* only small case strings are allowed to display Items

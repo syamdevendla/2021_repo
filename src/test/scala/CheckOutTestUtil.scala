@@ -54,6 +54,32 @@ class checkOutTestUtil extends AnyFlatSpec with should.Matchers with BeforeAndAf
     val list = List("banana","grapes","strawberry","t@#$HYP")
     sCartObj.getTotal(list) should be (0)
   }
+  it should "throw INVALID_OFFER if item price is <= 0" in {
+         a [Exception] should be thrownBy {
+          sCartObj.setItemsOffer("apple",(-1,2))
+    }  
+  }
+  it should "throw INVALID_OFFER if item name is empty" in {
+         a [Exception] should be thrownBy {
+          sCartObj.setItemsOffer("apple",(1,0))
+    }  
+  }
+  it should "throw INVALID_ITEM if item name is empty" in {
+         a [Exception] should be thrownBy {
+         sCartObj.setItemsOffer(" ",(1,1))
+    }  
+  }
+   it should "use orange price as 0.25 and apple price 0.6 and offers as apple(1,1) and orange(3,2)" in { 
+    val list = List("apPle","apPLe","Orange","aPplE")
+    sCartObj.setItemsOffer("apple",(1,1))
+    sCartObj.setItemsOffer("orange",(3,2))
+    sCartObj.getTotal(list) should be (1.45)
+  }
+  it should "use orange price as 0.25 and apple price 0.6 and offer for only apple(3,2)" in { 
+    val list = List("apPle","apPLe","Orange","aPplE")
+    sCartObj.setItemsOffer("apple",(3,2))
+    sCartObj.getTotal(list) should be (2.05)
+  }
   
   after {
     //clean after test

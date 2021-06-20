@@ -2,13 +2,15 @@
 import scala.collection.mutable._
 
 
-//* All prices tags will be in Pounds, 60p  => 0.6 pound
+//* All prices tags will be in Pounds, 60p => 0.6 pound
 //* Input any string items
 //* Assuming only small case items are allowed. So, converting all strings to lowercase.
 //* only small case strings are allowed to display Items
 //* User can add any item but other than sale items all are ignored.
 //* An exception thrown for an empty list
 //* Exception thrown:  Empty string for Item display and negative or zero prices display 
+//* OfferItem should not be null, and items offer should be > zero
+//* 
 
 class shoppingCart() extends Exception{
   
@@ -32,14 +34,30 @@ class shoppingCart() extends Exception{
   }
   private def __computeTotal(itemsCount: HashMap[String,Long]): Double ={
      var total: Double = 0
+     if(offerMap.isEmpty){
       itemsCount.foreach{
         case (key, value) => 
           total = total + (value * itemAndValueMap(key))
       }
+     }
+     else{
+      itemsCount.foreach{
+        case (key, value) => {        
+          if(offerMap.contains(key)){
+            val cnt = offerMap(key)._1 + offerMap(key)._2
+            var numOfItemsEligibleForOffer = (value/cnt)*offerMap(key)._1 + (value%cnt)
+            total = total + (numOfItemsEligibleForOffer * itemAndValueMap(key))
+          }
+          else{
+            total = total + (value * itemAndValueMap(key))
+          }
+        }
+      }
+    }
      return total
    }
   
-  //Add a new item in display(item name and price)
+  //Add a new item in display[item name and price (item,price)]
   def setItemForDisplay(item: (String,Double)) = {
     
     if(item._1.trim().isEmpty){
@@ -50,13 +68,19 @@ class shoppingCart() extends Exception{
     } 
     itemAndValueMap.put(item._1.trim().toLowerCase(), item._2)
   }
-  private var itemAndValueMap: HashMap[String,Double] = HashMap()   
+  //Add new offers[item ->(3 for 2  as (3,2))]
+  def setItemsOffer(item: String, offer: (Int, Int)) = {
+    if(item.isEmpty){
+      throw new Exception("INVALID_ITEM")
+    }
+    if(offer._1 <= 0 || offer._2 <= 0){
+      throw new Exception("INVALID_OFFER")
+    }
+    offerMap.put(item.trim().toLowerCase(), offer)
+  }
+  private var itemAndValueMap: HashMap[String,Double] = HashMap() 
+  private var offerMap: HashMap[String, (Int,Int)] = HashMap()
 }
-//-> All prices tags will be in Pounds, 60p=> 0.6 pound
-//0. Input any string items
-//1. Assuming only small case items are allowed. So, converting all strings to lowercase.
-//2. only small case strings are allowed to display Items
-//3. User can add any item but other than sale items all are ignored.
 
 object CheckOutUtil extends App {
   
